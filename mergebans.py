@@ -38,23 +38,23 @@ branchbans = []
 #ancestor = open(sys.argv[1],'r').readlines()
 with open(sys.argv[1], 'r') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
-        for row in bans:
-            ancestorbans[ ';'.join(row[1], row[2], row[5]) ] = row;
+    for row in bans:
+        ancestorbans[ ';'.join(row[1], row[2], row[5]) ] = row
 
 # The version of the file at the HEAD of the current branch.
 # The result of the merge should be left in this file by overwriting it.
 #current = open(sys.argv[2],'r').readlines()
 with open(sys.argv[2], 'r') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
-        for row in bans:
-            currentbans[ ';'.join(row[1], row[2], row[5]) ] = row;
+    for row in bans:
+        currentbans[ ';'.join(row[1], row[2], row[5]) ] = row
 
 # The version of the file at the HEAD of the other branch.
 #other = open(sys.argv[3],'r').readlines()
 with open(sys.argv[3], 'r') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
-        for row in bans:
-            branchbans[ ';'.join(row[1], row[2], row[5]) ] = row;
+    for row in bans:
+        branchbans[ ';'.join(row[1], row[2], row[5]) ] = row
 
 # The merge algorithm is as follows:
 # Append any text that was added to the beginning of the file in the
@@ -64,12 +64,12 @@ with open(sys.argv[3], 'r') as csvfile:
 try:
     combined_bans = currentbans + branchbans
     sorted(combined_bans, key=lambda ban: ban[5])
-except DiffError, d:
-    iprint ''.join(difflib.unified_diff(ancestor,other))
+except DiffError:
+    print(''.join(difflib.unified_diff(ancestor,other)))
     sys.exit(1)
 
-print "The following text will be appended to the top of the file:"
-print ''.join(ancestor_to_other)
+print("The following text will be appended to the top of the file:")
+#print ''.join()
 f = open(sys.argv[2],'w')
 csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
 csvwriter.writerows(combined_bans)
