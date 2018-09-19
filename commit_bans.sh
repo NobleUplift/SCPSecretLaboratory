@@ -30,6 +30,7 @@ then
 	then
 		message="Add/remove bans"
 	elif [[ $slots -eq true ]]
+	then
 		message="Update reserved slots"
 	else
 		echo "No files to commit"
