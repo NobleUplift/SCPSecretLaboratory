@@ -9,8 +9,33 @@ branch_name=${branch_name##refs/heads/}
 if [[ $branch_name != "master" ]]
 then
 	echo "Adding files on $branch_name"
-	git add SteamIdBans.txt IpBans.txt Reserved\ Slots.txt
-	git commit -m "Add/remove bans"
+	bans=false
+	slots=false
+	message=
+	git add SteamIdBans.txt IpBans.txt
+	if [[ $? -eq 0 ]]
+	then
+		bans=true
+	fi
+	git add Reserved\ Slots.txt
+	if [[ $? -eq 0 ]]
+	then
+		slots=true
+	fi
+	
+	if [[ $bans -eq true && slots -eq true ]]
+	then
+		message=Add/remove bans and reserved slots
+	elif [[ $bans -eq true ]]
+	then
+		message=Add/remove bans
+	elif [[ $slots -eq true ]]
+		message=Update reserved slots
+	else
+		echo "No files to commit"
+		exit 1
+	fi
+	git commit -m "$message"
 	git push
 else
 	echo "Cannot make commits on branch $branch_name"
