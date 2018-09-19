@@ -25,12 +25,12 @@ then
 	
 	if [[ $bans -eq true && slots -eq true ]]
 	then
-		message=Add/remove bans and reserved slots
+		message="Add/remove bans and update reserved slots"
 	elif [[ $bans -eq true ]]
 	then
-		message=Add/remove bans
+		message="Add/remove bans"
 	elif [[ $slots -eq true ]]
-		message=Update reserved slots
+		message="Update reserved slots"
 	else
 		echo "No files to commit"
 		exit 1
