@@ -36,7 +36,7 @@ branchbans = {}
 # The version of the file from the common ancestor of the two branches.
 # This constitutes the 'base' version of the file.
 #ancestor = open(sys.argv[1],'r').readlines()
-with open(sys.argv[1], 'r') as csvfile:
+with open(sys.argv[1], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
         ancestorbans[ ';'.join([row[1], row[2], row[5]]) ] = row
@@ -44,14 +44,14 @@ with open(sys.argv[1], 'r') as csvfile:
 # The version of the file at the HEAD of the current branch.
 # The result of the merge should be left in this file by overwriting it.
 #current = open(sys.argv[2],'r').readlines()
-with open(sys.argv[2], 'r') as csvfile:
+with open(sys.argv[2], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
         currentbans[ ';'.join([row[1], row[2], row[5]]) ] = row
 
 # The version of the file at the HEAD of the other branch.
 #other = open(sys.argv[3],'r').readlines()
-with open(sys.argv[3], 'r') as csvfile:
+with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
         branchbans[ ';'.join([row[1], row[2], row[5]]) ] = row
@@ -63,7 +63,7 @@ with open(sys.argv[3], 'r') as csvfile:
 # beginning of the file then fail.
 try:
     combined_bans = {**currentbans, ** branchbans}
-    sorted(combined_bans, key=lambda ban: ban[5])
+    combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 except DiffError:
     print(''.join(difflib.unified_diff(ancestor,other)))
     sys.exit(1)
