@@ -103,7 +103,7 @@ for key in branch_bans:
         combined_bans[key] = branch_bans[key]
 
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
-for key in combined_bans:
+for key in combined_bans.keys():
     if int(combined_bans[key][2]) < ticks_now:
         combined_bans.pop(key, None)
 
