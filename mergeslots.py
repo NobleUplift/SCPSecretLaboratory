@@ -60,7 +60,7 @@ with open(sys.argv[1], 'r', encoding='utf-8') as csvfile:
     for row in slots:
         if len(row) == 1:
             ancestor_slots[ row[0] ] = row
-        else
+        else:
             ancestor_slots[ row[1] ] = row
 
 # The version of the file at the HEAD of the current branch.
@@ -70,7 +70,7 @@ with open(sys.argv[2], 'r', encoding='utf-8') as csvfile:
     for row in slots:
         if len(row) == 1:
             current_slots[ row[0] ] = row
-        else
+        else:
             current_slots[ row[1] ] = row
 
 # The version of the file at the HEAD of the other branch.
@@ -79,7 +79,7 @@ with open(sys.argv[3], 'r', encoding='utf-8') as csvfile:
     for row in slots:
         if len(row) == 1:
             branch_slots[ row[0] ] = row
-        else
+        else:
             branch_slots[ row[1] ] = row
 
 # The merge algorithm is as follows:
