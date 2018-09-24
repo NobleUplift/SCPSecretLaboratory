@@ -1,8 +1,8 @@
 # git config --local include.path ../.gitconfig
 # https://stackoverflow.com/questions/18329621/storing-git-config-as-part-of-the-repository
 [merge "mergebans"]
-	name = Merge SteamID and IP bans in SCP:SL.
-	driver = python3 ./mergebans.py %O %A %B %L
+        name = Merge SteamID and IP bans in SCP:SL.
+        driver = python3 ./mergebans.py %O %A %B %L
 [merge "mergeslots"]
         name = Merge reserved slots in SCP:SL.
         driver = python3 ./mergeslots.py %O %A %B %L

@@ -62,7 +62,7 @@ branch_bans = {}
 with open(sys.argv[1], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
-        row[0] = unicode(row[0].replace("\ufeff", ""), 'utf-8')
+        row[0] = row[0].replace("\ufeff", "")
         ancestor_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
 # The version of the file at the HEAD of the current branch.
@@ -70,14 +70,14 @@ with open(sys.argv[1], 'r', encoding='utf-8-sig') as csvfile:
 with open(sys.argv[2], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
-        row[0] = unicode(row[0].replace("\ufeff", ""), 'utf-8')
+        row[0] = row[0].replace("\ufeff", "")
         current_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
 # The version of the file at the HEAD of the other branch.
 with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
-        row[0] = unicode(row[0].replace("\ufeff", ""), 'utf-8')
+        row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
 # The merge algorithm is as follows:
@@ -90,10 +90,10 @@ now = time.time()
 
 for key in branch_bans:
     branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
-    branch_admin = unicode(branch_bans[key][4], 'utf-8')
+    branch_admin = branch_bans[key][4]
     if key in current_bans:
         current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
-        current_admin = unicode(current_bans[key][4], 'utf-8')
+        current_admin = current_bans[key][4]
         if branch_diff < current_diff:
             combined_bans[key] = current_bans[key]
             if branch_admin != current_admin:
