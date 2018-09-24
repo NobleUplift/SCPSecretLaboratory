@@ -84,21 +84,29 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
 # beginning of the file then fail.
 combined_bans = current_bans.copy()
 now = time.time()
+
+for key in branch_slots:
+    branch_diff = branch_slots[key][2] - branch_slots[key][5]
+    branch_admin = branch_slots[key][4]
+    if key in current_slots:
+        current_diff = current_slots[key][2] - current_slots[key][5]
+        current_admin = current_slots[key][4]
+        if branch_diff < current_diff:
+            combined_bans[key] = current_slots[key]
+            if branch_admin != current_admin:
+                combined_bans[key][4] = current_admin + ', ' + branch_admin
+        elif current_diff > branch_diff:
+            combined_bans[key] = branch_slots[key]
+            if branch_admin != current_admin:
+                combined_bans[key][4] = current_admin + ', ' + branch_admin
+    else:
+        combined_bans[key] = branch_slots[key]
+
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
 for key in combined_bans:
     if combined_bans[key][2] < ticks_now:
         combined_bans.pop(key, None)
 
-for key in branch_slots:
-    branch_diff = branch_slots[key][2] - branch_slots[key][5]
-    if key in current_slots:
-        current_diff = current_slots[key][2] - current_slots[key][5]
-        if branch_diff < current_diff:
-            combined_bans[key] = current_slots[key]
-        elif current_diff > branch_diff:
-            combined_bans[key] = branch_slots[key]
-    else:
-        combined_bans[key] = branch_slots[key]
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 print("The following text will be appended to the top of the file:")
