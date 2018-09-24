@@ -107,11 +107,12 @@ for key in list(combined_bans.keys()):
     if int(combined_bans[key][2]) < ticks_now:
         combined_bans.pop(key, None)
 
+combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 print("The following text will be appended to the top of the file:")
 for key in combined_bans:
-    print(';'.join(combined_bans[key]))
+    print(';'.join(combined_bans))
 
 with open(sys.argv[2], 'w') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
