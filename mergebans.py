@@ -29,7 +29,7 @@ This is a custom merge driver for git. You can either define
 it in .git/config like this:
 
 [merge "mergebans"]
-        name = Merge reserved slots in SCP:SL.
+        name = Merge SteamID and IP bans in SCP:SL.
         driver = python3 ./mergebans.py %O %A %B %L
 
 Or define it in .gitconfig and run the following command:
@@ -85,22 +85,22 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
 combined_bans = current_bans.copy()
 now = time.time()
 
-for key in branch_slots:
-    branch_diff = branch_slots[key][2] - branch_slots[key][5]
-    branch_admin = branch_slots[key][4]
-    if key in current_slots:
-        current_diff = current_slots[key][2] - current_slots[key][5]
-        current_admin = current_slots[key][4]
+for key in branch_bans:
+    branch_diff = branch_bans[key][2] - branch_bans[key][5]
+    branch_admin = branch_bans[key][4]
+    if key in current_bans:
+        current_diff = current_bans[key][2] - current_bans[key][5]
+        current_admin = current_bans[key][4]
         if branch_diff < current_diff:
-            combined_bans[key] = current_slots[key]
+            combined_bans[key] = current_bans[key]
             if branch_admin != current_admin:
                 combined_bans[key][4] = current_admin + ', ' + branch_admin
         elif current_diff > branch_diff:
-            combined_bans[key] = branch_slots[key]
+            combined_bans[key] = branch_bans[key]
             if branch_admin != current_admin:
                 combined_bans[key][4] = current_admin + ', ' + branch_admin
     else:
-        combined_bans[key] = branch_slots[key]
+        combined_bans[key] = branch_bans[key]
 
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
 for key in combined_bans:
