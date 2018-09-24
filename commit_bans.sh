@@ -38,6 +38,7 @@ then
 	fi
 	git commit -m "$message"
 	git push
+	git merge  --no-edit origin/master
 else
 	echo "Cannot make commits on branch $branch_name"
 fi

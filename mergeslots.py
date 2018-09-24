@@ -97,7 +97,8 @@ for key in branch_slots:
     else:
         combined_slots[key] = branch_slots[key]
 
-print("The following text will be appended to the top of the file:")
+print("")
+print("This is the content of the new Reserved Slots.txt file:")
 for key in combined_slots:
     print(';'.join(combined_slots[key]))
 with open(sys.argv[2], 'w') as csvfile:

@@ -113,7 +113,8 @@ for key in list(combined_bans.keys()):
 combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
-print("The following text will be appended to the top of the file:")
+print("")
+print("This is the content of the " + sys.argv[0] + " file:")
 for value in combined_bans:
     print(u";".join(value))
 
