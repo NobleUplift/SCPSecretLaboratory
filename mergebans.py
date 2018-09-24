@@ -111,8 +111,8 @@ combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 print("The following text will be appended to the top of the file:")
-for key in combined_bans:
-    print(';'.join(combined_bans))
+for value in combined_bans:
+    print(';'.join(value))
 
 with open(sys.argv[2], 'w') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
