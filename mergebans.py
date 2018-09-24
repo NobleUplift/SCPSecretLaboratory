@@ -119,8 +119,8 @@ for value in combined_bans:
 
 with open(sys.argv[2], 'w', encoding='utf-8-sig') as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
-    for key in combined_bans:
-        csvwriter.writerow(combined_bans[key])
+    for value in combined_bans:
+        csvwriter.writerow(value)
 
 # Exit with zero status if the merge went cleanly, non-zero otherwise.
 sys.exit(0)
