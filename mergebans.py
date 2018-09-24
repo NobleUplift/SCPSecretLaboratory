@@ -103,14 +103,14 @@ for key in branch_bans:
         combined_bans[key] = branch_bans[key]
 
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
-for key in combined_bans.keys():
+for key in list(combined_bans.keys()):
     if int(combined_bans[key][2]) < ticks_now:
         combined_bans.pop(key, None)
 
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 print("The following text will be appended to the top of the file:")
-for key in branch_bans:
+for key in combined_bans:
     print(';'.join(combined_bans[key]))
 
 with open(sys.argv[2], 'w') as csvfile:
