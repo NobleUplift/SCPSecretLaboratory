@@ -86,25 +86,25 @@ combined_bans = current_bans.copy()
 now = time.time()
 
 for key in branch_bans:
-    branch_diff = branch_bans[key][2] - branch_bans[key][5]
+    branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
     branch_admin = branch_bans[key][4]
     if key in current_bans:
-        current_diff = current_bans[key][2] - current_bans[key][5]
+        current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
         current_admin = current_bans[key][4]
         if branch_diff < current_diff:
             combined_bans[key] = current_bans[key]
             if branch_admin != current_admin:
-                combined_bans[key][4] = current_admin + ', ' + branch_admin
+                combined_bans[key][4] = current_admin + ',' + branch_admin
         elif current_diff > branch_diff:
             combined_bans[key] = branch_bans[key]
             if branch_admin != current_admin:
-                combined_bans[key][4] = current_admin + ', ' + branch_admin
+                combined_bans[key][4] = current_admin + ',' + branch_admin
     else:
         combined_bans[key] = branch_bans[key]
 
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
 for key in combined_bans:
-    if combined_bans[key][2] < ticks_now:
+    if int(combined_bans[key][2]) < ticks_now:
         combined_bans.pop(key, None)
 
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
