@@ -114,7 +114,7 @@ combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 print("")
-print("This is the content of the " + sys.argv[0] + " file:")
+print("This is the content of the ban file:")
 for value in combined_bans:
     print(u";".join(value))
 
