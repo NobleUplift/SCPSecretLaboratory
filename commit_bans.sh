@@ -12,16 +12,22 @@ then
 	bans=false
 	slots=false
 	message=
-	git add SteamIdBans.txt IpBans.txt
-	if [[ $? -eq 0 ]]
+	if git commit | grep -q "SteamIdBans.txt"
 	then
 		bans=true
 	fi
-	git add Reserved\ Slots.txt
-	if [[ $? -eq 0 ]]
+	if git commit | grep -q "IpBans.txt"
+	then
+		bans=true
+	fi
+	
+	if git commit | grep -q "Reserved Slots.txt"
 	then
 		slots=true
 	fi
+	
+	git pull --all
+	git add SteamIdBans.txt IpBans.txt Reserved\ Slots.txt
 	
 	if [[ $bans -eq true && slots -eq true ]]
 	then
