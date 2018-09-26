@@ -70,6 +70,9 @@ with open(sys.argv[1], 'r', encoding='utf-8-sig') as csvfile:
 with open(sys.argv[2], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
+        if len(row) != 6:
+            print('ERROR! Non-standard row detected in ban file: ' + ';'.join(row))
+            sys.exit(1)
         row[0] = row[0].replace("\ufeff", "")
         current_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
@@ -77,6 +80,9 @@ with open(sys.argv[2], 'r', encoding='utf-8-sig') as csvfile:
 with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
+        if len(row) != 6:
+            print('ERROR! Non-standard row detected in ban file: ' + ';'.join(row))
+            sys.exit(2)
         row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
@@ -119,9 +125,13 @@ for value in combined_bans:
     print(u";".join(value))
 
 with open(sys.argv[2], 'w', encoding='utf-8-sig') as csvfile:
+    #counter = 0
     csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL, lineterminator="\r\n")
     for value in combined_bans:
+        #if counter == 0:
+        #    value[0] = 
         csvwriter.writerow(value)
+        #counter++
 
 # Exit with zero status if the merge went cleanly, non-zero otherwise.
 sys.exit(0)
