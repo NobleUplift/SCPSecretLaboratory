@@ -118,7 +118,7 @@ print("This is the content of the ban file:")
 for value in combined_bans:
     print(u";".join(value))
 
-with open(sys.argv[2], 'w', encoding='utf-8-sig') as csvfile:
+with open(sys.argv[2], 'w', encoding='utf-8-sig', lineterminator="\r\n") as csvfile:
     csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
     for value in combined_bans:
         csvwriter.writerow(value)
