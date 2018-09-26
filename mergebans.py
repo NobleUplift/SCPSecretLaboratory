@@ -88,11 +88,6 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
         row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
-# The merge algorithm is as follows:
-# Append any text that was added to the beginning of the file in the
-# other branch to the beginning of the current branch's copy of the file.
-# If the other branch contains changes other than adding text at the
-# beginning of the file then fail.
 combined_bans = current_bans.copy()
 now = time.time()
 
