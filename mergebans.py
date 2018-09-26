@@ -71,8 +71,9 @@ with open(sys.argv[2], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
         if len(row) != 6:
-            print('ERROR! Non-standard row detected in ban file: ' + ';'.join(row))
-            sys.exit(1)
+            print('WARNING! Non-standard row detected in ban file: ' + ';'.join(row))
+            continue
+            #sys.exit(1)
         row[0] = row[0].replace("\ufeff", "")
         current_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
@@ -81,8 +82,9 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
     bans = csv.reader(csvfile, delimiter=';', quotechar='"')
     for row in bans:
         if len(row) != 6:
-            print('ERROR! Non-standard row detected in ban file: ' + ';'.join(row))
-            sys.exit(2)
+            print('WARNING! Non-standard row detected in ban file: ' + ';'.join(row))
+            continue
+            #sys.exit(2)
         row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
