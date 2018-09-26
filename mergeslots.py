@@ -101,8 +101,8 @@ print("")
 print("This is the content of the new Reserved Slots.txt file:")
 for key in combined_slots:
     print(';'.join(combined_slots[key]))
-with open(sys.argv[2], 'w', lineterminator="\r\n") as csvfile:
-    csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL)
+with open(sys.argv[2], 'w') as csvfile:
+    csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL, lineterminator="\r\n")
     for key in combined_slots:
         csvwriter.writerow(combined_slots[key])
 
