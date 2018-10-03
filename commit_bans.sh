@@ -42,8 +42,9 @@ then
 		message="Update reserved slots"
 		#echo "COMMIT MESSAGE $message"
 	else
-		echo "No files to commit, exiting"
-		exit 1
+		echo "No files to commit, merge with master"
+		git merge --no-edit origin/master
+		exit 0
 	fi
 	#echo "Adding files SteamIdBans.txt, IpBans.txt, and/or Reserved Slots.txt"
 	git add SteamIdBans.txt IpBans.txt Reserved\ Slots.txt
@@ -58,7 +59,7 @@ then
 	#echo "Pulling Git after push"
 	git pull --all
 	#echo "Merging with the master branch"
-	git merge  --no-edit origin/master
+	git merge --no-edit origin/master
 else
 	echo "Cannot make commits on branch $branch_name"
 fi
