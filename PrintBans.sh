@@ -18,12 +18,12 @@ do
 		name=${name/,/\\,}
 		idip=$(echo $ban | cut -d';' -f2)
 		end_time=$(echo $ban | cut -d';' -f3)
-		ticksToDateString $end_time
+		ticksToDateString ${end_time:-0}
 		end_time=$date_string
 		reason=$(echo $ban | cut -d';' -f4)
 		admin=$(echo $ban | cut -d';' -f5)
 		start_time=$(echo $ban | cut -d';' -f6)
-		ticksToDateString $start_time
+		ticksToDateString ${start_time:-0}
 		start_time=$date_string
 		if [ "$file" = "SteamIdBans.txt" ]
 		then
