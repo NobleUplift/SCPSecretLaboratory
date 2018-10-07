@@ -93,16 +93,26 @@ now = time.time()
 
 for key in branch_bans:
     branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
-    #branch_admin = branch_bans[key][4]
+    branch_reason = branch_bans[key][3]
+    branch_admin = branch_bans[key][4]
     if key in current_bans:
         current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
-        #current_admin = current_bans[key][4]
+        current_reason = current_bans[key][3]
+        current_admin = current_bans[key][4]
         if branch_diff < current_diff:
             combined_bans[key] = current_bans[key]
+            #if current_admin == 'ADMIN':
+            #    combined_bans[key][4] = branch_admin
+            #elif branch_admin == 'ADMIN':
+            #    combined_bans[key][4] = current_admin
             #if branch_admin != current_admin:
             #    combined_bans[key][4] = current_admin + ',' + branch_admin
         elif current_diff > branch_diff:
             combined_bans[key] = branch_bans[key]
+            #if current_admin == 'ADMIN':
+            #    combined_bans[key][4] = branch_admin
+            #elif branch_admin == 'ADMIN':
+            #    combined_bans[key][4] = current_admin
             #if branch_admin != current_admin:
             #    combined_bans[key][4] = current_admin + ',' + branch_admin
     else:
