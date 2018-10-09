@@ -91,14 +91,47 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
 combined_bans = current_bans.copy()
 now = time.time()
 
+def compare_row(a, b):
+    if len(a) > len(b):
+        return 1
+    elif len(a) < len(b):
+        return -1
+    else:
+        for i in range(0, len(a) - 1):
+            if a[i] > b[i]:
+                return 1
+            elif a[i] < b[i]:
+                return -1
+    return 0
+
 for key in branch_bans:
-    branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
-    branch_reason = branch_bans[key][3]
-    branch_admin = branch_bans[key][4]
     if key in current_bans:
+        if key in ancestor_bans:
+            #
+            # If the key exists in all three branches, determine if the row
+            # is a duplicate of the current, the branch, or they are both the same
+            #
+            ancestor_current = compare_row(ancestor_bans[key], current_bans[key])
+            ancestor_branch = compare_row(ancestor_bans[key], branch_bans[key])
+            if ancestor_current == 0 and ancestor_branch != 0:
+                combined_bans[key] = branch_bans[key]
+                continue
+            elif ancestor_current != 0 and ancestor_branch == 0:
+                combined_bans[key] = current_bans[key]
+                continue
+            elif ancestor_current == 0 and ancestor_branch == 0:
+                combined_bans[key] = current_bans[key]
+                continue
+        #
+        # If key exists in branch bans, current bans, and not ancestor bans
+        # the ban exists on multiple servers but has not been synced
+        #
+        branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
+        #branch_reason = branch_bans[key][3]
+        #branch_admin = branch_bans[key][4]
         current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
-        current_reason = current_bans[key][3]
-        current_admin = current_bans[key][4]
+        #current_reason = current_bans[key][3]
+        #current_admin = current_bans[key][4]
         if branch_diff < current_diff:
             combined_bans[key] = current_bans[key]
             #if current_admin == 'ADMIN':
@@ -116,6 +149,10 @@ for key in branch_bans:
             #if branch_admin != current_admin:
             #    combined_bans[key][4] = current_admin + ',' + branch_admin
     else:
+        #
+        # If the key is in the new branch, but not the current branch,
+        # then it is a new ban
+        #
         combined_bans[key] = branch_bans[key]
 
 ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
