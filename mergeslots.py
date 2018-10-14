@@ -82,15 +82,42 @@ with open(sys.argv[3], 'r', encoding='utf-8') as csvfile:
         else:
             branch_slots[ row[1] ] = row
 
-combined_slots = current_slots.copy()
-for key in branch_slots:
-    if key in current_slots:
-        if len(branch_slots[key]) < len(current_slots[key]):
-            combined_slots[key] = current_slots[key]
-        else:
-            combined_slots[key] = branch_slots[key]
+def compare_row(a, b):
+    if len(a) > len(b):
+        return 1
+    elif len(a) < len(b):
+        return -1
     else:
+        for i in range(len(a)):
+            if a[i] > b[i]:
+                return 1
+            elif a[i] < b[i]:
+                return -1
+    return 0
+
+combined_slots = {}
+for key in list(ancestor_slots.keys()):
+    if key not in current_slots or key not in branch_slots:
+        ancestor_slots.pop(key, None)
+        current_slots.pop(key, None)
+        branch_slots.pop(key, None)
+        continue
+    ancestor_current = compare_row(ancestor_slots[key], current_slots[key])
+    ancestor_branch = compare_row(ancestor_slots[key], branch_slots[key])
+    if ancestor_current == 0 and ancestor_branch != 0:
         combined_slots[key] = branch_slots[key]
+    elif ancestor_current != 0 and ancestor_branch == 0:
+        combined_slots[key] = current_slots[key]
+    elif ancestor_current == 0 and ancestor_branch == 0:
+        combined_slots[key] = ancestor_slots[key]
+    else:
+        combined_slots[key] = current_slots[key]
+    ancestor_slots.pop(key, None)
+    current_slots.pop(key, None)
+    branch_slots.pop(key, None)
+
+for key in current_slots:
+    combined_slots[key] = current_slots[key]
 
 print("")
 print("This is the content of the new Reserved Slots.txt file:")

@@ -167,7 +167,7 @@ for key in list(ancestor_bans.keys()):
         #print(branch_bans[key])
         combined_bans[key] = current_bans[key]
     elif ancestor_current == 0 and ancestor_branch == 0:
-        combined_bans[key] = current_bans[key]
+        combined_bans[key] = ancestor_bans[key]
     else:
         combined_bans[key] = choose_row(current_bans, branch_bans, key)
     ancestor_bans.pop(key, None)
