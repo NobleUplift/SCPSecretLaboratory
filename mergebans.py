@@ -88,7 +88,7 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
         row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
-combined_bans = current_bans.copy()
+combined_bans = {}
 now = time.time()
 
 def compare_row(a, b):
@@ -97,68 +97,99 @@ def compare_row(a, b):
     elif len(a) < len(b):
         return -1
     else:
-        for i in range(0, len(a) - 1):
+        for i in range(len(a)):
             if a[i] > b[i]:
                 return 1
             elif a[i] < b[i]:
                 return -1
     return 0
 
-for key in branch_bans:
-    if key in current_bans:
-        if key in ancestor_bans:
-            #
-            # If the key exists in all three branches, determine if the row
-            # is a duplicate of the current, the branch, or they are both the same
-            #
-            ancestor_current = compare_row(ancestor_bans[key], current_bans[key])
-            ancestor_branch = compare_row(ancestor_bans[key], branch_bans[key])
-            if ancestor_current == 0 and ancestor_branch != 0:
-                combined_bans[key] = branch_bans[key]
-                continue
-            elif ancestor_current != 0 and ancestor_branch == 0:
-                combined_bans[key] = current_bans[key]
-                continue
-            elif ancestor_current == 0 and ancestor_branch == 0:
-                combined_bans[key] = current_bans[key]
-                continue
-        #
-        # If key exists in branch bans, current bans, and not ancestor bans
-        # the ban exists on multiple servers but has not been synced
-        #
-        branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
-        #branch_reason = branch_bans[key][3]
-        #branch_admin = branch_bans[key][4]
-        current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
-        #current_reason = current_bans[key][3]
-        #current_admin = current_bans[key][4]
-        if branch_diff < current_diff:
-            combined_bans[key] = current_bans[key]
-            #if current_admin == 'ADMIN':
-            #    combined_bans[key][4] = branch_admin
-            #elif branch_admin == 'ADMIN':
-            #    combined_bans[key][4] = current_admin
-            #if branch_admin != current_admin:
-            #    combined_bans[key][4] = current_admin + ',' + branch_admin
-        elif current_diff > branch_diff:
-            combined_bans[key] = branch_bans[key]
-            #if current_admin == 'ADMIN':
-            #    combined_bans[key][4] = branch_admin
-            #elif branch_admin == 'ADMIN':
-            #    combined_bans[key][4] = current_admin
-            #if branch_admin != current_admin:
-            #    combined_bans[key][4] = current_admin + ',' + branch_admin
+def choose_row(current_bans, branch_bans, key):
+    #
+    # If key exists in branch bans, current bans, and not ancestor bans
+    # the ban exists on multiple servers but has not been synced
+    #
+    current_reason = current_bans[key][3]
+    current_admin = current_bans[key][4]
+    current_diff = int(current_bans[key][2]) - int(current_bans[key][5])
+    branch_reason = branch_bans[key][3]
+    branch_admin = branch_bans[key][4]
+    branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
+    
+    if len(current_reason) > 0 and len(branch_reason) == 0:
+        return current_bans[key]
+    elif len(branch_reason) > 0 and len(current_reason) == 0:
+        return branch_bans[key]
+    
+    if (branch_admin == 'ADMIN' or branch_admin == 'Server') and current_admin != 'ADMIN' and current_admin != 'Server':
+        return current_bans[key]
+    elif (current_admin == 'ADMIN' or current_admin == 'Server') and branch_admin != 'ADMIN' and branch_admin != 'Server':
+        return branch_bans[key]
+    
+    if branch_diff < current_diff:
+        return current_bans[key]
+    elif current_diff > branch_diff:
+        return branch_bans[key]
     else:
-        #
-        # If the key is in the new branch, but not the current branch,
-        # then it is a new ban
-        #
-        combined_bans[key] = branch_bans[key]
+        if int(current_bans[key][5]) > int(branch_bans[key][5]):
+            return current_bans[key]
+        elif int(current_bans[key][5]) < int(branch_bans[key][5]):
+            return branch_bans[key]
+    
+    #
+    # If we can't find a good reason to pick one ban over the other
+    # default to returning the branch that we're pulling into our repo
+    #
+    return branch_bans[key]
 
-ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
-for key in list(combined_bans.keys()):
-    if int(combined_bans[key][2]) < ticks_now:
-        combined_bans.pop(key, None)
+for key in list(ancestor_bans.keys()):
+    if key not in current_bans or key not in branch_bans:
+        ancestor_bans.pop(key, None)
+        current_bans.pop(key, None)
+        branch_bans.pop(key, None)
+        continue
+    #
+    # If the key exists in all three branches, determine if the row
+    # is a duplicate of the current, the branch, or they are both the same
+    #
+    ancestor_current = compare_row(ancestor_bans[key], current_bans[key])
+    ancestor_branch = compare_row(ancestor_bans[key], branch_bans[key])
+    if ancestor_current == 0 and ancestor_branch != 0:
+        #print("ADD ROW")
+        #print(branch_bans[key])
+        #print("DO NOT ADD ROW ")
+        #print(current_bans[key])
+        combined_bans[key] = branch_bans[key]
+    elif ancestor_current != 0 and ancestor_branch == 0:
+        #print("ADD ROW")
+        #print(current_bans[key])
+        #print("DO NOT ADD ROW ")
+        #print(branch_bans[key])
+        combined_bans[key] = current_bans[key]
+    elif ancestor_current == 0 and ancestor_branch == 0:
+        combined_bans[key] = current_bans[key]
+    else:
+        combined_bans[key] = choose_row(current_bans, branch_bans, key)
+    ancestor_bans.pop(key, None)
+    current_bans.pop(key, None)
+    branch_bans.pop(key, None)
+
+for key in list(branch_bans.keys()):
+    if key in current_bans:
+        combined_bans[key] = choose_row(current_bans, branch_bans, key)
+        current_bans.pop(key, None)
+        branch_bans.pop(key, None)
+    else:
+        combined_bans[key] = branch_bans[key]
+        branch_bans.pop(key, None)
+
+for key in list(current_bans.keys()):
+    combined_bans[key] = current_bans[key]
+
+#ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
+#for key in list(combined_bans.keys()):
+#    if int(combined_bans[key][2]) < ticks_now:
+#        combined_bans.pop(key, None)
 
 combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
