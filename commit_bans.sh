@@ -42,6 +42,8 @@ then
 		message="Update reserved slots"
 		#echo "COMMIT MESSAGE $message"
 	else
+		#echo "No files to commit, pull all branches"
+		git pull --all
 		echo "No files to commit, merge with master"
 		git merge --no-edit origin/master
 		exit 0
