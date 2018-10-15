@@ -201,7 +201,7 @@ for value in combined_bans:
 
 with open(sys.argv[2], 'w', encoding='utf-8-sig') as csvfile:
     #counter = 0
-    csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL, lineterminator="\r\n")
+    csvwriter = csv.writer(csvfile, delimiter=';', quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
     for value in combined_bans:
         #if counter == 0:
         #    value[0] = 
