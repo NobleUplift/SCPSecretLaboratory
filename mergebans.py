@@ -194,10 +194,10 @@ for key in list(current_bans.keys()):
 combined_bans = list(combined_bans.values())
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
-print("")
-print("This is the content of the ban file:")
-for value in combined_bans:
-    print(u";".join(value))
+#print("")
+#print("This is the content of the ban file:")
+#for value in combined_bans:
+#    print(u";".join(value))
 
 with open(sys.argv[2], 'w', encoding='utf-8-sig') as csvfile:
     #counter = 0
