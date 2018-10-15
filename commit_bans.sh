@@ -14,35 +14,32 @@ then
 	message=
 	if git commit | grep -q "SteamIdBans.txt"
 	then
-		#echo "SteamIdBans.txt will be staged for commit"
+		echo "SteamIdBans.txt will be staged for commit"
 		bans=true
 	fi
 	if git commit | grep -q "IpBans.txt"
 	then
-		#echo "IpBans.txt will be staged for commit"
+		echo "IpBans.txt will be staged for commit"
 		bans=true
 	fi
 	
-	if git commit | grep -q "Reserved Slots.txt"
+	if git commit | grep -q "ReservedSlots.txt"
 	then
-		#echo "Reserved Slots.txt will be staged for commit"
+		echo "ReservedSlots.txt will be staged for commit"
 		slots=true
 	fi
 	
 	if [[ $bans = true && $slots = true ]]
 	then
 		message="Add/remove bans and update reserved slots"
-		#echo "COMMIT MESSAGE $message"
 	elif [[ $bans = true ]]
 	then
 		message="Add/remove bans"
-		#echo "COMMIT MESSAGE $message"
 	elif [[ $slots = true ]]
 	then
 		message="Update reserved slots"
-		#echo "COMMIT MESSAGE $message"
 	else
-		#echo "No files to commit, pull all branches"
+		echo "No files to commit, pull all branches"
 		git pull --all
 		echo "No files to commit, merge with master"
 		git merge --no-edit origin/master
@@ -50,7 +47,7 @@ then
 	fi
 	#echo "Adding files SteamIdBans.txt, IpBans.txt, and/or Reserved Slots.txt"
 	git add SteamIdBans.txt IpBans.txt Reserved\ Slots.txt
-	#echo "Committing bans/slots with message $message"
+	echo "Committing bans/slots with message $message"
 	git commit -m "$message"
 	if [[ $? -ne 0 ]]
 	then
@@ -58,9 +55,14 @@ then
 		exit 2
 	fi
 	git push
-	#echo "Pulling Git after push"
+	
+	cp SteamIdBans.txt ../SteamIdBans.txt.bak
+	cp IpBans.txt ../IpBans.txt.bak
+	cp ReservedSlots.txt ../ReservedSlots.txt.bak
+	
+	echo "Pulling Git after push"
 	git pull --all
-	#echo "Merging with the master branch"
+	echo "Merging with the master branch"
 	git merge --no-edit origin/master
 else
 	echo "Cannot make commits on branch $branch_name"
