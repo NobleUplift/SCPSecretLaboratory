@@ -12,18 +12,18 @@ then
 	bans=false
 	slots=false
 	message=
-	if git commit | grep -q "SteamIdBans.txt"
+	if git commit --no-edit | grep -q "SteamIdBans.txt"
 	then
 		echo "SteamIdBans.txt will be staged for commit"
 		bans=true
 	fi
-	if git commit | grep -q "IpBans.txt"
+	if git commit --no-edit | grep -q "IpBans.txt"
 	then
 		echo "IpBans.txt will be staged for commit"
 		bans=true
 	fi
 	
-	if git commit | grep -q "ReservedSlots.txt"
+	if git commit --no-edit | grep -q "ReservedSlots.txt"
 	then
 		echo "ReservedSlots.txt will be staged for commit"
 		slots=true
@@ -46,7 +46,7 @@ then
 		exit 0
 	fi
 	#echo "Adding files SteamIdBans.txt, IpBans.txt, and/or Reserved Slots.txt"
-	git add SteamIdBans.txt IpBans.txt Reserved\ Slots.txt
+	git add SteamIdBans.txt IpBans.txt ReservedSlots.txt
 	echo "Committing bans/slots with message $message"
 	git commit -m "$message"
 	if [[ $? -ne 0 ]]
