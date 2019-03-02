@@ -1,7 +1,10 @@
 #!/bin/bash
-
+# Finished 2019-01-05 04:41 PM
 # https://askubuntu.com/questions/62492/how-can-i-change-the-date-modified-created-of-a-file
 
+# Takes files with date format
+# Round 2018-07-10 12.42.38.txt
+# And applies this date to the Last Modified date of the file
 find ServerLogs/Round* -print | while read filename
 do
 	if [ "$filename" = "ServerLogs" ]
