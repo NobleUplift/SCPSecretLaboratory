@@ -13,12 +13,20 @@ if [ -z "$1" ]
 then
 	echo "Name must be provided."
 	exit
+elif [[ "$1" == *";"* ]]
+then
+	echo "Name cannot contain semicolons."
+	exit
 fi
 name=$1
 
 if [ -z "$2" ]
 then
 	echo "Steam ID must be provided."
+	exit
+elif [[ $2 -le 76561197960265728 || $2 -ge 80000000000000000 ]]
+then
+	echo "Invalid Steam ID provided."
 	exit
 fi
 steamid=$2
@@ -27,8 +35,35 @@ if [[ -v $3 ]]
 then
 	echo "IP address must be provided or set to an empty string."
 	exit
+else
+	IFS='.' read -r -a ipoctets <<< "$3"
+	if [ "${#ipoctets[@]}" -ne 4 ]
+	then
+		echo "IP addresses must have 4 octets."
+		exit
+	fi
+	
+	for octet in "${ipoctets[@]}"
+	do
+		if ! [[ $octet =~ ^[0-9]+$ ]]
+		then
+			echo "IP Octet $octet is not a number."
+			exit
+		fi
+		
+		if [[ $octet -lt 0 || $octet -gt 255 ]]
+		then
+			echo "IP octet $octet is not a valid octet."
+			exit
+		fi
+	done
 fi
 ipaddress=$3
+
+if [[ -n "$ipaddress" && "${ipaddress:0:7}" != "::ffff:" ]]
+then
+	ipaddress=::ffff:${ipaddress}
+fi
 
 if [ -z "$4" ]
 then
@@ -36,56 +71,6 @@ then
 	exit
 fi
 duration=$4
-
-if [ -z "$5" ]
-then
-	echo "Banning admin must be provided."
-	exit
-fi
-admin=${5:-ADMIN}
-
-if [ -z "$6" ]
-then
-	echo "Reason must be provided."
-	exit
-fi
-reason=${6:-}
-
-#
-# Validation
-#
-if [[ $name == *";"* ]]
-then
-	echo "Name cannot contain semicolons."
-	exit
-fi
-
-if [[ $steamid -le 76561197960265728 || $steamid -ge 80000000000000000 ]]
-then
-	echo "Invalid Steam ID provided."
-	exit
-fi
-
-IFS='.' read -r -a ipoctets <<< "$ipaddress"
-for octet in "${ipoctets[@]}"
-do
-	if ! [[ $octet =~ ^[0-9]+$ ]]
-	then
-		echo "IP Octet $octet is not a number."
-		exit
-	fi
-	
-	if [[ $octet -lt 0 || $octet -gt 255 ]]
-	then
-		echo "IP octet $octet is not a valid octet."
-		exit
-	fi
-done
-
-if [[ -n "$ipaddress" && "${ipaddress:0:7}" != "::ffff:" ]]
-then
-	ipaddress=::ffff:${ipaddress}
-fi
 
 case $duration in
 1m)
@@ -140,24 +125,34 @@ case $duration in
 	duration=2628000
 	;;
 50y)
-	duration=1576800000
+	duration=26280000
 	;;
 *)
 	echo "Duration must be one of: 1m|5m|15m|30m|1h|3h|5h|8h|12h|1d|3d|7d|14d|30d|100d|1y|5y|50y"
 	exit 1
 esac
 
-if [[ $admin == *";"* ]]
+if [ -z "$5" ]
+then
+	echo "Banning admin must be provided."
+	exit
+elif [[ $5 == *";"* ]]
 then
 	echo "Admin cannot contain semicolons."
 	exit
 fi
+admin=${5:-ADMIN}
 
-if [[ $reason == *";"* ]]
+if [ -z "$6" ]
+then
+	echo "Reason must be provided."
+	exit
+elif [[ "$6" == *";"* ]]
 then
 	echo "Reason cannot contain semicolons."
 	exit
 fi
+reason=${6:-}
 
 now=`date +%s`
 start=$(($now * 10000000))
