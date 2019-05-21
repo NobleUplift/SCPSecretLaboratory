@@ -8,6 +8,24 @@ branch_name=${branch_name##refs/heads/}
 
 if [[ $branch_name != "master" ]]
 then
+	if [ ! -s SteamIdBans.txt ]
+	then
+		echo "ERROR ERROR ERROR SteamIdBans.txt was emptied out!"
+		cp -fR ../SteamIdBans.txt.bak ./SteamIdBans.txt
+	fi
+	
+	if [ ! -s IpBans.txt ]
+	then
+		echo "ERROR ERROR ERROR IpBans.txt was emptied out!"
+		cp -fR ../IpBans.txt.bak ./IpBans.txt
+	fi
+	
+	if [ ! -s ReservedSlots.txt ]
+	then
+		echo "ERROR ERROR ERROR ReservedSlots.txt was emptied out!"
+		cp -fR ../ReservedSlots.txt.bak ./ReservedSlots.txt
+	fi
+	
 	echo "Adding files on $branch_name"
 	bans=false
 	slots=false
