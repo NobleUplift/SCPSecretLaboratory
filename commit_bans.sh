@@ -6,25 +6,30 @@ branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
 branch_name="(unnamed branch)"     # detached HEAD
 branch_name=${branch_name##refs/heads/}
 
+if [ ! -s SteamIdBans.txt ]
+then
+	echo "ERROR ERROR ERROR SteamIdBans.txt was emptied out!"
+	cp -fR ../SteamIdBans.txt.bak ./SteamIdBans.txt
+fi
+
+if [ ! -s IpBans.txt ]
+then
+	echo "ERROR ERROR ERROR IpBans.txt was emptied out!"
+	cp -fR ../IpBans.txt.bak ./IpBans.txt
+fi
+
+if [ ! -s ReservedSlots.txt ]
+then
+	echo "ERROR ERROR ERROR ReservedSlots.txt was emptied out!"
+	cp -fR ../ReservedSlots.txt.bak ./ReservedSlots.txt
+fi
+
+cp SteamIdBans.txt ../SteamIdBans.txt.bak
+cp IpBans.txt ../IpBans.txt.bak
+cp ReservedSlots.txt ../ReservedSlots.txt.bak
+
 if [[ $branch_name != "master" ]]
 then
-	if [ ! -s SteamIdBans.txt ]
-	then
-		echo "ERROR ERROR ERROR SteamIdBans.txt was emptied out!"
-		cp -fR ../SteamIdBans.txt.bak ./SteamIdBans.txt
-	fi
-	
-	if [ ! -s IpBans.txt ]
-	then
-		echo "ERROR ERROR ERROR IpBans.txt was emptied out!"
-		cp -fR ../IpBans.txt.bak ./IpBans.txt
-	fi
-	
-	if [ ! -s ReservedSlots.txt ]
-	then
-		echo "ERROR ERROR ERROR ReservedSlots.txt was emptied out!"
-		cp -fR ../ReservedSlots.txt.bak ./ReservedSlots.txt
-	fi
 	
 	echo "Adding files on $branch_name"
 	bans=false
@@ -73,10 +78,6 @@ then
 		exit 2
 	fi
 	git push
-	
-	cp SteamIdBans.txt ../SteamIdBans.txt.bak
-	cp IpBans.txt ../IpBans.txt.bak
-	cp ReservedSlots.txt ../ReservedSlots.txt.bak
 	
 	echo "Pulling Git after push"
 	#git pull --all
