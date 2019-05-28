@@ -62,6 +62,14 @@ then
 	then
 		message="Update reserved slots"
 	else
+		cwd="$PWD"
+		cd ../SCPSLConfig
+		git checkout master
+		git pull --all
+		git merge --no-edit origin/$branch_name
+		git push
+		cd "$cwd"
+		
 		echo "No files to commit, pull all branches"
 		git fetch origin master:master
 		git pull --all
@@ -82,6 +90,7 @@ then
 	
 	cwd="$PWD"
 	cd ../SCPSLConfig
+	git checkout master
 	git pull --all
 	git merge --no-edit origin/$branch_name
 	git push
