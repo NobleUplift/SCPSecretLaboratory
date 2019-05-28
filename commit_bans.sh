@@ -63,6 +63,7 @@ then
 		message="Update reserved slots"
 	else
 		echo "No files to commit, pull all branches"
+		git fetch origin master:master
 		git pull --all
 		echo "No files to commit, merge with master"
 		git merge --no-edit origin/master
@@ -81,11 +82,13 @@ then
 	
 	cwd="$PWD"
 	cd ../SCPSLConfig
+	git pull --all
 	git merge --no-edit origin/$branch_name
 	git push
 	cd "$cwd"
 	
 	echo "Pulling Git after push"
+	git fetch origin master:master
 	git pull --all
 	echo "Merging with the master branch"
 	git merge --no-edit origin/master
