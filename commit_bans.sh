@@ -79,6 +79,12 @@ then
 	fi
 	git push
 	
+	cwd="$PWD"
+	cd ../SCPSLConfig
+	git merge --no-edit origin/$branch_name
+	git push
+	cd "$cwd"
+	
 	echo "Pulling Git after push"
 	git pull --all
 	echo "Merging with the master branch"

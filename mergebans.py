@@ -88,12 +88,20 @@ with open(sys.argv[3], 'r', encoding='utf-8-sig') as csvfile:
         row[0] = row[0].replace("\ufeff", "")
         branch_bans[ row[1] ] = row # ';'.join([row[1], row[2], row[5]])
 
+# sys.argv[4] is the conflict marker size
+# sys.argv[5] is the merged result's location
+
 combined_bans = {}
 now = time.time()
 
+#
+# Row Comparison Method
+#
 def compare_row(a, b):
+    # If the character length of row a is greater than b, use a
     if len(a) > len(b):
         return 1
+    # If the character length of row b is greater than a, use b
     elif len(a) < len(b):
         return -1
     else:
@@ -102,8 +110,13 @@ def compare_row(a, b):
                 return 1
             elif a[i] < b[i]:
                 return -1
+    # If both rows are the exact same,
+    # then it does't matter which row is used
     return 0
 
+#
+# Method for choosing which row to use for the same banned user
+#
 def choose_row(current_bans, branch_bans, key):
     #
     # If key exists in branch bans, current bans, and not ancestor bans
@@ -116,23 +129,39 @@ def choose_row(current_bans, branch_bans, key):
     branch_admin = branch_bans[key][4]
     branch_diff = int(branch_bans[key][2]) - int(branch_bans[key][5])
     
+    # If current row has a reason and the branch row does not, 
+    # USE CURRENT ROW
     if len(current_reason) > 0 and len(branch_reason) == 0:
         return current_bans[key]
+    # If branch row has a reason and the current row does not,
+    # USE BRANCH ROW
     elif len(branch_reason) > 0 and len(current_reason) == 0:
         return branch_bans[key]
     
+    # If branch row has a generic banning admin and the current row does not,
+    # USE CURRENT ROW
     if (branch_admin == 'ADMIN' or branch_admin == 'Server') and current_admin != 'ADMIN' and current_admin != 'Server':
         return current_bans[key]
+    # If the current row has a generic banning admin and the branch row does not,
+    # USE BRANCH ROW
     elif (current_admin == 'ADMIN' or current_admin == 'Server') and branch_admin != 'ADMIN' and branch_admin != 'Server':
         return branch_bans[key]
     
+    # If current row ban is longer in length than the branch row ban,
+    # USE CURRENT ROW
     if branch_diff < current_diff:
         return current_bans[key]
-    elif current_diff > branch_diff:
+    # If the branch row ban is longer in length than the current row ban,
+    # USE BRANCH ROW
+    elif branch_diff > current_diff:
         return branch_bans[key]
     else:
+        # If current row ban was created after the branch row ban,
+        # USE CURRENT ROW
         if int(current_bans[key][5]) > int(branch_bans[key][5]):
             return current_bans[key]
+        # If branch row ban was created after the current row ban,
+        # USE BRANCH ROW
         elif int(current_bans[key][5]) < int(branch_bans[key][5]):
             return branch_bans[key]
     
@@ -142,8 +171,19 @@ def choose_row(current_bans, branch_bans, key):
     #
     return branch_bans[key]
 
+#
+# Iterate over the ancestor bans first because 
+#
 for key in list(ancestor_bans.keys()):
+    # If the ban has not been retained in either the current row
+    # or the branch row, then this is an UNBAN
     if key not in current_bans or key not in branch_bans:
+        print('UNBAN DETECTED DURING MERGE PROCESS FOR KEY ' + key)
+        if key not in current_bans:
+            print(key + ' NOT IN CURRENT BANS')
+        if key not in branch_bans:
+            print(key + ' NOT IN BRANCH BANS')
+        print(ancestor_bans[key].join(','))
         ancestor_bans.pop(key, None)
         current_bans.pop(key, None)
         branch_bans.pop(key, None)
@@ -154,44 +194,69 @@ for key in list(ancestor_bans.keys()):
     #
     ancestor_current = compare_row(ancestor_bans[key], current_bans[key])
     ancestor_branch = compare_row(ancestor_bans[key], branch_bans[key])
+    
+    # If the ancestor row is equivalent to current row,
+    # but the branch row differs,
+    # USE BRANCH ROW
     if ancestor_current == 0 and ancestor_branch != 0:
         #print("ADD ROW")
         #print(branch_bans[key])
         #print("DO NOT ADD ROW ")
         #print(current_bans[key])
         combined_bans[key] = branch_bans[key]
+    # If the ancestor role is equivalent to the branch row,
+    # but the current row differs,
+    # USE CURRENT ROW
     elif ancestor_current != 0 and ancestor_branch == 0:
         #print("ADD ROW")
         #print(current_bans[key])
         #print("DO NOT ADD ROW ")
         #print(branch_bans[key])
         combined_bans[key] = current_bans[key]
+    # If the current row and branch row are both identical
+    # to the ancestor row,
+    # USE ANCESTOR ROW
     elif ancestor_current == 0 and ancestor_branch == 0:
         combined_bans[key] = ancestor_bans[key]
+    # 
+    # Equivalent to:
+    # elif ancestor_current != 0 and ancestor_branch != 0:
     else:
         combined_bans[key] = choose_row(current_bans, branch_bans, key)
+    
+    # Row has been chosen, remove all duplicate entries
+    # from other arrays
     ancestor_bans.pop(key, None)
     current_bans.pop(key, None)
     branch_bans.pop(key, None)
 
 for key in list(branch_bans.keys()):
+    # If key is in both branch bans and current bans,
+    # compare the two rows and use the chosen row
+    # Remove competing entries
     if key in current_bans:
         combined_bans[key] = choose_row(current_bans, branch_bans, key)
         current_bans.pop(key, None)
         branch_bans.pop(key, None)
+    # If key is only in branch bans, add it to combined bans
+    # and remove it from branch bans just to keep array consistency
     else:
         combined_bans[key] = branch_bans[key]
         branch_bans.pop(key, None)
 
+# Add any bans that have not been popped from current bans into combined bans
 for key in list(current_bans.keys()):
     combined_bans[key] = current_bans[key]
+    current_bans.pop(key, None)
 
 #ticks_now = TICKS_OFFSET + (now * MICROSECOND_TENTH)
 #for key in list(combined_bans.keys()):
 #    if int(combined_bans[key][2]) < ticks_now:
 #        combined_bans.pop(key, None)
 
+# Convert combined_bans from a map to a list
 combined_bans = list(combined_bans.values())
+# Now that it is a list, it can be sorted with a lambda
 combined_bans = sorted(combined_bans, key=lambda ban: int(ban[5]))
 
 #print("")
