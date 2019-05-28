@@ -183,7 +183,7 @@ for key in list(ancestor_bans.keys()):
             print(key + ' NOT IN CURRENT BANS')
         if key not in branch_bans:
             print(key + ' NOT IN BRANCH BANS')
-        print(ancestor_bans[key].join(','))
+        print(','.join(ancestor_bans[key]))
         ancestor_bans.pop(key, None)
         current_bans.pop(key, None)
         branch_bans.pop(key, None)
