@@ -177,16 +177,17 @@ def choose_row(current_bans, branch_bans, key):
 for key in list(ancestor_bans.keys()):
     # If the ban has not been retained in either the current row
     # or the branch row, then this is an UNBAN
-    if key not in current_bans or key not in branch_bans:
-        print('UNBAN DETECTED DURING MERGE PROCESS FOR KEY ' + key)
+    if key not in current_bans:
+        unban_log = 'UNBAN DETECTED DURING MERGE PROCESS FOR KEY ' + key
         if key not in current_bans:
-            print(key + ' NOT IN CURRENT BANS')
+            unban_log += ' NOT IN CURRENT BANS: '
         if key not in branch_bans:
-            print(key + ' NOT IN BRANCH BANS')
-        print(','.join(ancestor_bans[key]))
+            unban_log += ' NOT IN BRANCH BANS: '
+        unban_log += ','.join(ancestor_bans[key])
+        print(unban_log)
         ancestor_bans.pop(key, None)
-        current_bans.pop(key, None)
-        branch_bans.pop(key, None)
+        #current_bans.pop(key, None)
+        #branch_bans.pop(key, None)
         continue
     #
     # If the key exists in all three branches, determine if the row
