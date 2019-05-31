@@ -199,25 +199,26 @@ for key in list(ancestor_bans.keys()):
     # If the ancestor row is equivalent to current row,
     # but the branch row differs,
     # USE BRANCH ROW
-    if ancestor_current == 0 and ancestor_branch != 0:
+    #if ancestor_current == 0 and ancestor_branch != 0:
         #print("ADD ROW")
         #print(branch_bans[key])
         #print("DO NOT ADD ROW ")
         #print(current_bans[key])
-        combined_bans[key] = branch_bans[key]
+        #combined_bans[key] = branch_bans[key]
     # If the ancestor role is equivalent to the branch row,
     # but the current row differs,
     # USE CURRENT ROW
-    elif ancestor_current != 0 and ancestor_branch == 0:
+    #elif ancestor_current != 0 and ancestor_branch == 0:
         #print("ADD ROW")
         #print(current_bans[key])
         #print("DO NOT ADD ROW ")
         #print(branch_bans[key])
-        combined_bans[key] = current_bans[key]
+        #combined_bans[key] = current_bans[key]
     # If the current row and branch row are both identical
     # to the ancestor row,
     # USE ANCESTOR ROW
-    elif ancestor_current == 0 and ancestor_branch == 0:
+    #el
+    if ancestor_current == 0 and ancestor_branch == 0:
         combined_bans[key] = ancestor_bans[key]
     # 
     # Equivalent to:
