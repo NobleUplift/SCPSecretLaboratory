@@ -70,11 +70,11 @@ then
 		git push
 		cd "$cwd"
 		
-		echo "No files to commit, pull all branches"
-		git fetch origin master:master
-		git pull --all
-		echo "No files to commit, merge with master"
-		git merge --no-edit origin/master
+		#echo "No files to commit, pull all branches"
+		#git fetch origin master:master
+		git pull --all >/dev/null
+		#echo "No files to commit, merge with master"
+		git merge --no-edit origin/master >/dev/null
 		exit 0
 	fi
 	#echo "Adding files SteamIdBans.txt, IpBans.txt, and/or Reserved Slots.txt"
@@ -96,11 +96,11 @@ then
 	git push
 	cd "$cwd"
 	
-	echo "Pulling Git after push"
-	git fetch origin master:master
-	git pull --all
-	echo "Merging with the master branch"
-	git merge --no-edit origin/master
+	#echo "Pulling Git after push"
+	#git fetch origin master:master
+	git pull --all >/dev/null
+	#echo "Merging with the master branch"
+	git merge --no-edit origin/master >/dev/null
 else
 	echo "Cannot make commits on branch $branch_name"
 fi
