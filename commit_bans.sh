@@ -6,19 +6,19 @@ branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
 branch_name="(unnamed branch)"     # detached HEAD
 branch_name=${branch_name##refs/heads/}
 
-if [[ ! -s SteamIdBans.txt || `cat SteamIdBans.txt` -eq $'\n' ]]
+if [[ ! -s SteamIdBans.txt ]]
 then
 	echo "[`date +'%Y-%m-%d %H:%M:%S'] [ERROR] SteamIdBans.txt was emptied out!"
 	cp -fR ../SteamIdBans.txt.bak ./SteamIdBans.txt
 fi
 
-if [[ ! -s IpBans.txt || `cat IpBans.txt` -eq $'\n' ]]
+if [[ ! -s IpBans.txt ]]
 then
 	echo "[`date +'%Y-%m-%d %H:%M:%S']  [ERROR] IpBans.txt was emptied out!"
 	cp -fR ../IpBans.txt.bak ./IpBans.txt
 fi
 
-if [[ ! -s ReservedSlots.txt || `cat ReservedSlots.txt` -eq $'\n' ]]
+if [[ ! -s ReservedSlots.txt ]]
 then
 	echo "[`date +'%Y-%m-%d %H:%M:%S']  [ERROR] ReservedSlots.txt was emptied out!"
 	cp -fR ../ReservedSlots.txt.bak ./ReservedSlots.txt
