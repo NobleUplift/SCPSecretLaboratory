@@ -33,7 +33,7 @@ cp ReservedSlots.txt ../ReservedSlots.txt.bak
 
 if [[ "$branch_name" != "master" ]]
 then
-	
+	now=`date +'%Y-%m-%d %H:%M:%S'`
 	echo "[$now] [STEP 1] Adding files on $branch_name"
 	bans=false
 	slots=false
