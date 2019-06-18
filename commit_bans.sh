@@ -72,7 +72,8 @@ then
 		echo "[$now] [STEP 3-4] Merge local master branch with origin/master"
 		cwd="$PWD"
 		cd ../SCPSLConfig
-		git checkout master
+		#git checkout master
+		git reset --hard HEAD
 		git pull --all
 		git merge --no-edit origin/$branch_name
 		git push
