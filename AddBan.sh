@@ -24,18 +24,15 @@ if [ -z "$2" ]
 then
 	echo "Steam ID must be provided."
 	exit
-elif [[ $2 -le 76561197960265728 || $2 -ge 80000000000000000 ]]
+elif [[ $2 -le 70000000000000000 || $2 -ge 80000000000000000 ]]
 then
 	echo "Invalid Steam ID provided."
 	exit
 fi
 steamid=$2
 
-if [[ -v $3 ]]
+if [[ ! -z "$3" ]]
 then
-	echo "IP address must be provided or set to an empty string."
-	exit
-else
 	IFS='.' read -r -a ipoctets <<< "$3"
 	if [ "${#ipoctets[@]}" -ne 4 ]
 	then
