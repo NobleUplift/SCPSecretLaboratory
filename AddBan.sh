@@ -158,6 +158,29 @@ end=$(($now + $duration * 60))
 end=$(($end * 10000000))
 end=$(($end + 621355968000000000))
 
+while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
+do
+	if [ "$steamid" = "$csv_id" ]
+	then
+		echo "$name with Steam ID $steamid has already been banned. Please remove this ban before adding a ban: "
+		echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
+		exit
+	fi
+done < SteamIdBans.txt
+
+if [ -n "$ipaddress" ]
+then
+	while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
+	do
+		if [ "$ipaddress" = "$csv_id" ]
+		then
+			echo "$name with IP address ${csv_id:7} has already been banned. You do not need to ban this IP address."
+			echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
+			exit
+		fi
+	done < IpBans.txt
+fi
+
 echo "Adding ban to SteamIdBans.txt..."
 echo "$name;$steamid;$end;$reason;$admin;$start"
 echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
