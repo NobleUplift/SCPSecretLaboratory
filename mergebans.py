@@ -97,19 +97,32 @@ now = time.time()
 #
 # Row Comparison Method
 #
-def compare_row(a, b):
-    # If the character length of row a is greater than b, use a
-    if len(a) > len(b):
+# If there is more content in a, return 1
+# If there is more content in b, return -1
+# If the two rows are equal, return 0
+#
+def compare_row(leftBans, rightBans, key):
+    # If key is not in rightBans, return leftBans
+    if key not in rightBans:
         return 1
-    # If the character length of row b is greater than a, use b
-    elif len(a) < len(b):
+    # If key is not in leftBans, return rightBans
+    elif key not in leftBans:
         return -1
     else:
-        for i in range(len(a)):
-            if a[i] > b[i]:
-                return 1
-            elif a[i] < b[i]:
-                return -1
+        a = leftBans[key]
+        b = rightBans[key]
+        # If the character length of row a is greater than b, use a
+        if len(a) > len(b):
+            return 1
+        # If the character length of row b is greater than a, use b
+        elif len(a) < len(b):
+            return -1
+        else:
+            for i in range(len(a)):
+                if a[i] > b[i]:
+                    return 1
+                elif a[i] < b[i]:
+                    return -1
     # If both rows are the exact same,
     # then it does't matter which row is used
     return 0
@@ -193,8 +206,8 @@ for key in list(ancestor_bans.keys()):
     # If the key exists in all three branches, determine if the row
     # is a duplicate of the current, the branch, or they are both the same
     #
-    ancestor_current = compare_row(ancestor_bans[key], current_bans[key])
-    ancestor_branch = compare_row(ancestor_bans[key], branch_bans[key])
+    ancestor_current = compare_row(ancestor_bans, current_bans, key)
+    ancestor_branch = compare_row(ancestor_bans, branch_bans, key)
     
     # If the ancestor row is equivalent to current row,
     # but the branch row differs,
