@@ -131,6 +131,11 @@ def compare_row(leftBans, rightBans, key):
 # Method for choosing which row to use for the same banned user
 #
 def choose_row(current_bans, branch_bans, key):
+    if key not in current_bans:
+        return branch_bans[key]
+    elif key not in branch_bans:
+        return current_bans[key]
+    
     #
     # If key exists in branch bans, current bans, and not ancestor bans
     # the ban exists on multiple servers but has not been synced
