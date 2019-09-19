@@ -20,23 +20,30 @@ then
 fi
 name=$1
 
-if [ -z "$2" ]
+if [[ -z $2 && -z $3 ]]
 then
-	echo "Steam ID must be provided."
+	echo "Steam ID or IP address must be provided."
 	exit
-elif [[ $2 -le 70000000000000000 || $2 -ge 80000000000000000 ]]
+fi
+
+if [[ ! -z "$2" ]]
 then
-	echo "Invalid Steam ID provided."
-	exit
+	if [[ $2 -le 70000000000000000 || $2 -ge 80000000000000000 ]]
+	then
+		echo "Invalid Steam ID provided."
+		exit
+	fi
 fi
 steamid=$2
 
 if [[ ! -z "$3" ]]
 then
-	IFS='.' read -r -a ipoctets <<< "$3"
+	temp=$3
+	temp=${temp//::ffff:/}
+	IFS='.' read -r -a ipoctets <<< "$temp"
 	if [ "${#ipoctets[@]}" -ne 4 ]
 	then
-		echo "IP addresses must have 4 octets."
+		echo "[ERROR] IP addresses must have 4 octets."
 		exit
 	fi
 	
@@ -44,13 +51,13 @@ then
 	do
 		if ! [[ $octet =~ ^[0-9]+$ ]]
 		then
-			echo "IP Octet $octet is not a number."
+			echo "[ERROR] IP Octet $octet is not a number."
 			exit
 		fi
 		
 		if [[ $octet -lt 0 || $octet -gt 255 ]]
 		then
-			echo "IP octet $octet is not a valid octet."
+			echo "[ERROR] IP octet $octet is not a valid octet."
 			exit
 		fi
 	done
@@ -64,7 +71,7 @@ fi
 
 if [ -z "$4" ]
 then
-	echo "Duration must be provided."
+	echo "[ERROR] Duration must be provided."
 	exit
 fi
 duration=$4
@@ -125,28 +132,28 @@ case $duration in
 	duration=26280000
 	;;
 *)
-	echo "Duration must be one of: 1m|5m|15m|30m|1h|3h|5h|8h|12h|1d|3d|7d|14d|30d|100d|1y|5y|50y"
+	echo "[ERROR] Duration must be one of: 1m|5m|15m|30m|1h|3h|5h|8h|12h|1d|3d|7d|14d|30d|100d|1y|5y|50y"
 	exit 1
 esac
 
 if [ -z "$5" ]
 then
-	echo "Banning admin must be provided."
+	echo "[ERROR] Banning admin must be provided."
 	exit
 elif [[ $5 == *";"* ]]
 then
-	echo "Admin cannot contain semicolons."
+	echo "[ERROR] Admin cannot contain semicolons."
 	exit
 fi
 admin=${5:-ADMIN}
 
 if [ -z "$6" ]
 then
-	echo "Reason must be provided."
+	echo "[ERROR] Reason must be provided."
 	exit
 elif [[ "$6" == *";"* ]]
 then
-	echo "Reason cannot contain semicolons."
+	echo "[ERROR] Reason cannot contain semicolons."
 	exit
 fi
 reason=${6:-}
@@ -162,7 +169,7 @@ while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
 do
 	if [ "$steamid" = "$csv_id" ]
 	then
-		echo "$name with Steam ID $steamid has already been banned. Please remove this ban before adding a ban: "
+		echo "[BAN FAILED] $name with Steam ID $steamid has already been banned. Please remove this ban before adding a ban: "
 		echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
 		exit
 	fi
@@ -174,16 +181,19 @@ then
 	do
 		if [ "$ipaddress" = "$csv_id" ]
 		then
-			echo "$name with IP address ${csv_id:7} has already been banned. You do not need to ban this IP address."
+			echo "[BAN FAILED] $name with IP address ${csv_id:7} has already been banned. You do not need to ban this IP address."
 			echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
 			exit
 		fi
 	done < IpBans.txt
 fi
 
-echo "Adding ban to SteamIdBans.txt..."
-echo "$name;$steamid;$end;$reason;$admin;$start"
-echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
+if [ -n "$steamid" ]
+then
+	echo "Adding ban to SteamIdBans.txt..."
+	echo "$name;$steamid;$end;$reason;$admin;$start"
+	echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
+fi
 
 if [ -n "$ipaddress" ]
 then
