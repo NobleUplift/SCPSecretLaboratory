@@ -165,39 +165,46 @@ end=$(($now + $duration * 60))
 end=$(($end * 10000000))
 end=$(($end + 621355968000000000))
 
-while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
-do
-	if [ "$steamid" = "$csv_id" ]
+if [ -n "$steamid" ]
+then
+	ban=true
+	while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
+	do
+		if [ "$steamid" = "$csv_id" ]
+		then
+			echo "[BAN FAILED] $name with Steam ID $steamid has already been banned. Please remove this ban before adding a ban: "
+			echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
+			#exit
+			ban=false
+		fi
+	done < SteamIdBans.txt
+	
+	if $ban
 	then
-		echo "[BAN FAILED] $name with Steam ID $steamid has already been banned. Please remove this ban before adding a ban: "
-		echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
-		exit
+		echo "Adding ban to SteamIdBans.txt..."
+		echo "$name;$steamid;$end;$reason;$admin;$start"
+		echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
 	fi
-done < SteamIdBans.txt
+fi
 
 if [ -n "$ipaddress" ]
 then
+	ban=true
 	while IFS=";" read -r csv_name csv_id csv_end csv_reason csv_admin csv_start
 	do
 		if [ "$ipaddress" = "$csv_id" ]
 		then
 			echo "[BAN FAILED] $name with IP address ${csv_id:7} has already been banned. You do not need to ban this IP address."
 			echo "$csv_name;$csv_id;$csv_end;$csv_reason;$csv_admin;$csv_start"
-			exit
+			#exit
+			ban=false
 		fi
 	done < IpBans.txt
-fi
-
-if [ -n "$steamid" ]
-then
-	echo "Adding ban to SteamIdBans.txt..."
-	echo "$name;$steamid;$end;$reason;$admin;$start"
-	echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
-fi
-
-if [ -n "$ipaddress" ]
-then
-	echo "Adding ban to IpBans.txt..."
-	echo "$name;$ipaddress;$end;$reason;$admin;$start"
-	echo "$name;$ipaddress;$end;$reason;$admin;$start" >> IpBans.txt
+	
+	if $ban
+	then
+		echo "Adding ban to IpBans.txt..."
+		echo "$name;$ipaddress;$end;$reason;$admin;$start"
+		echo "$name;$ipaddress;$end;$reason;$admin;$start" >> IpBans.txt
+	fi
 fi
