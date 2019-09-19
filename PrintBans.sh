@@ -22,7 +22,10 @@ ticksToDateString() {
 separator=","
 for file in SteamIdBans.txt IpBans.txt
 do
-	echo Name,Steam Profile,Start Time,End Time,Admin,Reason
+	newfile=${file//.txt/.csv}
+	rm -f $newfile
+	touch $newfile
+	echo Name,Steam Profile,Start Time,End Time,Admin,Reason | tee -a $newfile
 	while IFS= read -r ban || [[ $ban ]]
 	do
 		ban=${ban%$'\r'}
@@ -47,7 +50,7 @@ do
 		row[2]=$date_string
 		ticksToDateString ${row[5]}
 		row[5]=$date_string
-		echo ${row[0]}$separator${row[1]}$separator${row[5]}$separator${row[2]}$separator${row[4]}$separator${row[3]}
+		echo ${row[0]}$separator${row[1]}$separator${row[5]}$separator${row[2]}$separator${row[4]}$separator${row[3]} | tee -a $newfile
 	done<"$file"
 	echo ""
 done
