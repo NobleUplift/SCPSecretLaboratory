@@ -49,6 +49,8 @@ import sys, csv, time
 TICKS_OFFSET = 621355968000000000
 MICROSECOND_TENTH = 10000000
 
+print('[DRIVER] Merge driver has been activated. Merging bans...')
+
 # The arguments from git are the names of temporary files that
 # hold the contents of the different versions of the log.txt
 # file.

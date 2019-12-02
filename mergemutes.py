@@ -45,6 +45,8 @@ This tells git to use the 'mergemutes' merge driver.
 """
 import sys, csv
 
+print('[DRIVER] Merge driver has been activated. Merging mutes...')
+
 # The arguments from git are the names of temporary files that
 # hold the contents of the different versions of the log.txt
 # file.

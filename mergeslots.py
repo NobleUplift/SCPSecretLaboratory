@@ -45,6 +45,8 @@ This tells git to use the 'mergeslots' merge driver.
 """
 import sys, csv
 
+print('[DRIVER] Merge driver has been activated. Merging slots...')
+
 # The arguments from git are the names of temporary files that
 # hold the contents of the different versions of the log.txt
 # file.
