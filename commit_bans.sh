@@ -76,8 +76,10 @@ then
 		then
 			message="$message, add/remove mutes, and add/remove reserved slots"
 		elif [[ $mutes = true && $slots = false ]]
+		then
 			message="$message and add/remove mutes"
 		elif [[ $mutes = false && $slots = true ]]
+		then
 			message="$message and add/remove reserved slots"
 		fi
 	elif [[ $mutes = true ]]
