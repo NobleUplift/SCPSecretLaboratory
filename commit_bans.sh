@@ -38,6 +38,7 @@ then
 	now=`date +'%Y-%m-%d %H:%M:%S'`
 	echo "[$now] [STEP 1] Adding files on $branch_name"
 	bans=false
+	mutes=false
 	slots=false
 	message=
 	if git commit --no-edit | grep -q "UserIdBans.txt"
@@ -46,6 +47,7 @@ then
 		echo "[$now] [STEP 2] UserIdBans.txt will be staged for commit"
 		bans=true
 	fi
+	
 	if git commit --no-edit | grep -q "IpBans.txt"
 	then
 		now=`date +'%Y-%m-%d %H:%M:%S'`
@@ -60,15 +62,34 @@ then
 		slots=true
 	fi
 	
-	if [[ $bans = true && $slots = true ]]
+	if git commit --no-edit | grep -q "mutes.txt"
 	then
-		message="Add/remove bans and update reserved slots"
-	elif [[ $bans = true ]]
+		now=`date +'%Y-%m-%d %H:%M:%S'`
+		echo "[$now] [STEP 2] mutes.txt will be staged for commit"
+		mutes=true
+	fi
+	
+	if [[ $bans = true ]]
 	then
 		message="Add/remove bans"
+		if [[ $mutes = true && $slots = true ]]
+		then
+			message="$message, add/remove mutes, and add/remove reserved slots"
+		elif [[ $mutes = true && $slots = false ]]
+			message="$message and add/remove mutes"
+		elif [[ $mutes = false && $slots = true ]]
+			message="$message and add/remove reserved slots"
+		fi
+	elif [[ $mutes = true ]]
+	then
+		message="Add/remove mutes"
+		if [[ $slots = true ]]
+		then
+			message="$message and add/remove reserved slots"
+		fi
 	elif [[ $slots = true ]]
 	then
-		message="Update reserved slots"
+		message="Add/remove reserved slots"
 	else
 		now=`date +'%Y-%m-%d %H:%M:%S'`
 		echo "[$now] [STEP 3-4] Merge local master branch with origin/master"
