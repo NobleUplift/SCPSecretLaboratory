@@ -6,3 +6,7 @@
 [merge "mergeslots"]
         name = Merge reserved slots in SCP:SL.
         driver = python3 ./mergeslots.py %O %A %B %L
+[merge "mergemutes"]
+        name = Merge mutes in SCP:SL.
+        driver = python3 ./mergemutes.py %O %A %B %L
+
