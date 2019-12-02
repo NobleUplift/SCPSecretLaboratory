@@ -1,35 +1,37 @@
 #!/bin/bash
 
-cd "/home/steam/.config/SCP Secret Laboratory"
+cd "/home/steam/.config/SCP Secret Laboratory/config/global"
 # https://stackoverflow.com/questions/1593051/how-to-programmatically-determine-the-current-checked-out-git-branch
 branch_name="$(git symbolic-ref HEAD 2>/dev/null)" ||
 branch_name="(unnamed branch)"     # detached HEAD
 branch_name=${branch_name##refs/heads/}
 
-if [[ ! -s SteamIdBans.txt ]]
-then
-	now=`date +'%Y-%m-%d %H:%M:%S'`
-	echo "[$now] [ERROR] SteamIdBans.txt was emptied out!"
-	cp -fR ../SteamIdBans.txt.bak ./SteamIdBans.txt
-fi
-
-if [[ ! -s IpBans.txt ]]
-then
-	now=`date +'%Y-%m-%d %H:%M:%S'`
-	echo "[$now] [ERROR] IpBans.txt was emptied out!"
-	cp -fR ../IpBans.txt.bak ./IpBans.txt
-fi
-
-if [[ ! -s ReservedSlots.txt ]]
-then
-	now=`date +'%Y-%m-%d %H:%M:%S'`
-	echo "[$now] [ERROR] ReservedSlots.txt was emptied out!"
-	cp -fR ../ReservedSlots.txt.bak ./ReservedSlots.txt
-fi
-
-cp SteamIdBans.txt ../SteamIdBans.txt.bak
-cp IpBans.txt ../IpBans.txt.bak
-cp ReservedSlots.txt ../ReservedSlots.txt.bak
+# Let's hope that SCP:SL is no longer retarded and stops wiping the ban file
+#
+#if [[ ! -s UserIdBans.txt ]]
+#then
+#	now=`date +'%Y-%m-%d %H:%M:%S'`
+#	echo "[$now] [ERROR] UserIdBans.txt was emptied out!"
+#	cp -fR ../UserIdBans.txt.bak ./UserIdBans.txt
+#fi
+#
+#if [[ ! -s IpBans.txt ]]
+#then
+#	now=`date +'%Y-%m-%d %H:%M:%S'`
+#	echo "[$now] [ERROR] IpBans.txt was emptied out!"
+#	cp -fR ../IpBans.txt.bak ./IpBans.txt
+#fi
+#
+#if [[ ! -s UserIDReservedSlots.txt ]]
+#then
+#	now=`date +'%Y-%m-%d %H:%M:%S'`
+#	echo "[$now] [ERROR] UserIDReservedSlots.txt was emptied out!"
+#	cp -fR ../UserIDReservedSlots.txt.bak ./UserIDReservedSlots.txt
+#fi
+#
+#cp UserIdBans.txt ../UserIdBans.txt.bak
+#cp IpBans.txt ../IpBans.txt.bak
+#cp UserIDReservedSlots.txt ../UserIDReservedSlots.txt.bak
 
 if [[ "$branch_name" != "master" ]]
 then
@@ -38,10 +40,10 @@ then
 	bans=false
 	slots=false
 	message=
-	if git commit --no-edit | grep -q "SteamIdBans.txt"
+	if git commit --no-edit | grep -q "UserIdBans.txt"
 	then
 		now=`date +'%Y-%m-%d %H:%M:%S'`
-		echo "[$now] [STEP 2] SteamIdBans.txt will be staged for commit"
+		echo "[$now] [STEP 2] UserIdBans.txt will be staged for commit"
 		bans=true
 	fi
 	if git commit --no-edit | grep -q "IpBans.txt"
@@ -51,10 +53,10 @@ then
 		bans=true
 	fi
 	
-	if git commit --no-edit | grep -q "ReservedSlots.txt"
+	if git commit --no-edit | grep -q "UserIDReservedSlots.txt"
 	then
 		now=`date +'%Y-%m-%d %H:%M:%S'`
-		echo "[$now] [STEP 2] ReservedSlots.txt will be staged for commit"
+		echo "[$now] [STEP 2] UserIDReservedSlots.txt will be staged for commit"
 		slots=true
 	fi
 	
@@ -71,7 +73,7 @@ then
 		now=`date +'%Y-%m-%d %H:%M:%S'`
 		echo "[$now] [STEP 3-4] Merge local master branch with origin/master"
 		cwd="$PWD"
-		cd ../SCPSLConfig
+		cd "/home/steam/.config/SCPSLConfig"
 		#git checkout master
 		git reset --hard HEAD
 		git pull --all
@@ -88,8 +90,8 @@ then
 	fi
 	
 	now=`date +'%Y-%m-%d %H:%M:%S'`
-	#echo "[$now] [STEP 3] Adding files SteamIdBans.txt, IpBans.txt, and/or Reserved Slots.txt"
-	git add SteamIdBans.txt IpBans.txt ReservedSlots.txt
+	#echo "[$now] [STEP 3] Adding files UserIdBans.txt, IpBans.txt, and/or UserIDReservedSlots.txt"
+	git add UserIdBans.txt IpBans.txt UserIDReservedSlots.txt
 	echo "[$now] [STEP 3] Committing bans/slots with message $message"
 	git commit -m "$message"
 	if [[ $? -ne 0 ]]
@@ -102,7 +104,7 @@ then
 	now=`date +'%Y-%m-%d %H:%M:%S'`
 	echo "[$now] [STEP 4] Merge local master branch with origin/master"
 	cwd="$PWD"
-	cd ../SCPSLConfig
+	cd "/home/steam/.config/SCPSLConfig"
 	git checkout master
 	git pull --all
 	git merge --no-edit origin/$branch_name
