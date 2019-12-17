@@ -177,13 +177,13 @@ then
 			#exit
 			ban=false
 		fi
-	done < SteamIdBans.txt
+	done < config/global/UserIdBans.txt
 	
 	if $ban
 	then
-		echo "Adding ban to SteamIdBans.txt..."
-		echo "$name;$steamid;$end;$reason;$admin;$start"
-		echo "$name;$steamid;$end;$reason;$admin;$start" >> SteamIdBans.txt
+		echo "Adding ban to config/global/UserIdBans.txt..."
+		echo "$name;${steamid}@steam;$end;$reason;$admin;$start"
+		echo "$name;${steamid}@steam;$end;$reason;$admin;$start" >> config/global/UserIdBans.txt
 	fi
 fi
 
@@ -199,12 +199,12 @@ then
 			#exit
 			ban=false
 		fi
-	done < IpBans.txt
+	done < config/global/IpBans.txt
 	
 	if $ban
 	then
-		echo "Adding ban to IpBans.txt..."
+		echo "Adding ban to config/global/IpBans.txt..."
 		echo "$name;$ipaddress;$end;$reason;$admin;$start"
-		echo "$name;$ipaddress;$end;$reason;$admin;$start" >> IpBans.txt
+		echo "$name;$ipaddress;$end;$reason;$admin;$start" >> config/global/IpBans.txt
 	fi
 fi

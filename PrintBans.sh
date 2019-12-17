@@ -20,7 +20,7 @@ ticksToDateString() {
 }
 
 separator=","
-for file in SteamIdBans.txt IpBans.txt
+for file in config/global/UserIdBans.txt config/global/IpBans.txt
 do
 	newfile=${file//.txt/.csv}
 	rm -f $newfile
@@ -42,7 +42,7 @@ do
 		#ticksToDateString $start_time
 		#start_time=$date_string
 		row[0]=${row[0]//,/\\,}
-		if [ "$file" = "SteamIdBans.txt" ]
+		if [ "$file" = "config/global/UserIdBans.txt" ]
 		then
 			row[1]=http://steamcommunity.com/profiles/${row[1]}
 		fi
