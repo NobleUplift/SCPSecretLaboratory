@@ -17,7 +17,7 @@ fi
 # https://logbuffer.wordpress.com/2010/09/23/bash-scripting-preserve-whitespaces-in-variables/
 delimiter=": "
 IFS=
-for dir in $scpsl/*
+for dir in $scpsl/$server
 do
 	echo $dir
 	if [ ! -d "$dir" ]
