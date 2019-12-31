@@ -116,7 +116,7 @@ then
 	#echo "[$now] [STEP 3] Adding files UserIdBans.txt, IpBans.txt, and/or UserIDReservedSlots.txt"
 	git add UserIdBans.txt IpBans.txt UserIDReservedSlots.txt mutes.txt
 	echo "[$now] [STEP 3] Committing bans/slots with message $message"
-	git commit -m "$message"
+	git commit -m "$message on $branch_name at $now"
 	if [[ $? -ne 0 ]]
 	then
 		echo "exiting"
