@@ -58,30 +58,30 @@ branch_mutes = {}
 # The version of the file from the common ancestor of the two branches.
 # This constitutes the 'base' version of the file.
 with open(sys.argv[1], 'r', encoding='utf-8') as csvfile:
-    mutes = csv.reader(csvfile, delimiter=',', quotechar='"')
+    mutes = csv.reader(csvfile, delimiter='@', quotechar='"')
     for row in mutes:
         if len(row) == 1:
             ancestor_mutes[ row[0] ] = row
-        else:
+        elif len(row) == 2:
             ancestor_mutes[ row[1] ] = row
 
 # The version of the file at the HEAD of the current branch.
 # The result of the merge should be left in this file by overwriting it.
 with open(sys.argv[2], 'r', encoding='utf-8') as csvfile:
-    mutes = csv.reader(csvfile, delimiter=',', quotechar='"')
+    mutes = csv.reader(csvfile, delimiter='@', quotechar='"')
     for row in mutes:
         if len(row) == 1:
             current_mutes[ row[0] ] = row
-        else:
+        elif len(row) == 2:
             current_mutes[ row[1] ] = row
 
 # The version of the file at the HEAD of the other branch.
 with open(sys.argv[3], 'r', encoding='utf-8') as csvfile:
-    mutes = csv.reader(csvfile, delimiter=',', quotechar='"')
+    mutes = csv.reader(csvfile, delimiter='@', quotechar='"')
     for row in mutes:
         if len(row) == 1:
             branch_mutes[ row[0] ] = row
-        else:
+        elif len(row) == 2:
             branch_mutes[ row[1] ] = row
 
 def compare_row(a, b):
