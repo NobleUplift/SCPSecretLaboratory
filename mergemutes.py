@@ -121,6 +121,9 @@ for key in list(ancestor_mutes.keys()):
 for key in current_mutes:
     combined_mutes[key] = current_mutes[key]
 
+# Convert combined_mutes from a map to a list
+combined_mutes = list(combined_bans.values())
+# Now that it is a list, it can be sorted with a lambda
 combined_mutes = sorted(combined_mutes, key=lambda mute: mute[0])
 
 #print("")
@@ -128,9 +131,9 @@ combined_mutes = sorted(combined_mutes, key=lambda mute: mute[0])
 #for key in combined_mutes:
 #    print(';'.join(combined_mutes[key]))
 with open(sys.argv[2], 'w') as csvfile:
-    csvwriter = csv.writer(csvfile, delimiter=',', quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
-    for key in combined_mutes:
-        csvwriter.writerow(combined_mutes[key])
+    csvwriter = csv.writer(csvfile, delimiter='@', quoting=csv.QUOTE_MINIMAL, lineterminator="\n")
+    for value in combined_mutes:
+        csvwriter.writerow(value)
 
 # Exit with zero status if the merge went cleanly, non-zero otherwise.
 sys.exit(0)
