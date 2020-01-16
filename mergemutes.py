@@ -122,7 +122,7 @@ for key in current_mutes:
     combined_mutes[key] = current_mutes[key]
 
 # Convert combined_mutes from a map to a list
-combined_mutes = list(combined_bans.values())
+combined_mutes = list(combined_mutes.values())
 # Now that it is a list, it can be sorted with a lambda
 combined_mutes = sorted(combined_mutes, key=lambda mute: mute[0])
 
