@@ -1,6 +1,6 @@
 #!/bin/bash
 
-scpsl=/home/steam/.config/SCP Secret Laboratory
+scpsl=/home/steam/.config/SCP\ Secret\ Laboratory
 start_regex='^([0-9]{4}\-[0-9]{2}\-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3} -[0-9]{2}:[0-9]{2}) \| ([a-zA-Z0-9 ]+) \| ([a-zA-Z0-9 ]+) \| ([0-9]{17})@steam authenticated from endpoint ([0-9:.-]+)\. Auth token serial number: (.*)$'
 stop_regex='^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3} -[0-9]{2}:[0-9]{2}) \| ([a-zA-Z0-9 ]+) \| ([a-zA-Z0-9 ]+) \| (.*) ([0-9]{17})@steam disconnected from IP address ([0-9:.-]+). Last class: (.*) \(.*\)$'
 
