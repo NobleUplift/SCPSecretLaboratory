@@ -6,7 +6,8 @@ stop_regex='^([0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3} -[
 
 echo "" > ServerStatistics.log
 
-for dir in "$scpsl/ServerLogs/"*
+cd $scpsl
+for dir in "./ServerLogs/"*
 do
 	if [ ! -d $dir ]
 	then
